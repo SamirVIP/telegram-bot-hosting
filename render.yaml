@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: botforge
+    runtime: python
+    plan: starter          # paid plan + disk = real 24/7. free plan sleeps and wipes files.
+    region: frankfurt      # close to telegram DCs. singapore is closer to dhaka.
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_PASS
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATA_DIR
+        value: /data
+      - key: KEEPALIVE
+        value: "1"
+    disk:
+      name: botdata
+      mountPath: /data
+      sizeGB: 5
